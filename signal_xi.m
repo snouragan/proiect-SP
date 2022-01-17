@@ -1,6 +1,8 @@
-function [x1, x2] = signal_xi(x, T, main_signal_period)
+function [xi, si] = signal_xi(x, T, number_of_periods, period)
 % return signal xi 
-current_signal_period = main_signal_period / T;
-
+xi = x'*ones(period, period * number_of_periods);
+xi = xi(:);
+si = linspace(0, T * number_of_periods, 100 * number_of_periods);
+si = si(:);
 end
 
