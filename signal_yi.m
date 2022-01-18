@@ -1,7 +1,12 @@
-function [outputArg1,outputArg2] = signal_yi(inputArg1,inputArg2)
-%SIGNAL_YI Summary of this function goes here
-%   Detailed explanation goes here
-outputArg1 = inputArg1;
-outputArg2 = inputArg2;
+function [yi, si] = signal_yi(x, T, number_of_periods, period)
+% return signal yi
+yi = x'*ones(period, period * number_of_periods);
+for i=1:3
+    for j=1:100
+        yi(j,i)=((-1)^i)*yi(j,i);
+    end
 end
-
+yi = yi(:);
+si = linspace(0, T * number_of_periods, 100 * number_of_periods);
+si = si(:);
+end
