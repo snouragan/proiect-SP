@@ -1,177 +1,213 @@
 file = 'Teme proiect SP 421F 422F.xlsx';
-number = 4;
+n = 4;
 sheet = 'Sheet1';
-[a2, a1, a0] = readVariables(file, sheet, number);
+[a2, a1, a0] = readVariables(file, sheet, n);
 t1 = linspace(0, 1);
 t2 = linspace(-1, 3);
 T = [0.5, 1, 2];
 period = 1;
-number_of_periods = [3, 37, 20];
+number_of_periods = [3, 37, 20, 1, 10];
 s = linspace(-4, 6);
+CC = [1.827839, 4.166016, 2.083008];
+precision = 100000;
+precision_t = linspace(0,1,precision);
+pprecision = 100000;
+pprecision_t = linspace(0,1,precision);
+clf;
 
 % MAIN SIGNAL
 plot(t1, signal_main(a0, a1, a2, t1));
-design_graph('t', 'x(t)', 'Reprezentarea grafica x(t)');
+design_graph('t', 'x(t)', 'Reprezentarea grafica x(t) pe suportul [0;1]');
 
 input('next');
 
 plot(t2, signal_main(a0, a1, a2, t2));
-design_graph('t', 'x(t)', 'Reprezentarea grafica x(t)');
+design_graph('t', 'x(t)', 'Reprezentarea grafica x(t) pe suportul [-1;3]');
 
 input('next');
 
 % xi signal
 for i = 1:2
     for j = 1:3
-        [xi, si] = signal_xi(signal_main(a0, a1, a2, t1), T(j), number_of_periods(i), period);
-        subplot(3, 1, j);
-        plot(si, xi);
-        x_label = 'x' + string(j) + '(t)';
-        title_ = 'Reprezentarea grafica ' + x_label + ' pe ' + string(number_of_periods(i)) + ' perioade';
-        design_graph(x_label, 't', title_);
+        name = 'x';
+        signal = signal_main(a0, a1, a2, t1);
+        display_signal(signal, T, j, i, name, number_of_periods, period, @signal_xi);
     end
     input('next');
 end
 
-% yi signal signal
+% yi signal 
 for i = 1:2
     for j = 1:3
-        [yi, si] = signal_yi(signal_main(a0, a1, a2, t1), T(j), number_of_periods(i), period);
-        subplot(3, 1, j);
-        plot(si, yi);
-        x_label = 'y' + string(j) + '(t)';
-        title_ = 'Reprezentarea grafica ' + x_label + ' pe ' + string(number_of_periods(i)) + ' perioade';
-        design_graph(x_label, 't', title_);
+        name = 'y';
+        signal = signal_main(a0, a1, a2, t1);
+        display_signal(signal, T, j, i, name, number_of_periods, period, @signal_yi);
     end
     input('next');
 end
 
-% zi signal signal
+% zi signal 
 for i = 1:2
     for j = 1:3
-        [zi, si] = signal_zi(signal_main(a0, a1, a2, t1), T(j), number_of_periods(i), period);
-        subplot(3, 1, j);
-        plot(si, zi);
-        x_label = 'z' + string(j) + '(t)';
-        title_ = 'Reprezentarea grafica ' + x_label + ' pe ' + string(number_of_periods(i)) + ' perioade';
-        design_graph(x_label, 't', title_);
+        name = 'z';
+        signal = signal_main(a0, a1, a2, t1);
+        display_signal(signal, T, j, i, name, number_of_periods, period, @signal_zi);
     end
     input('next');
 end
 
-% xi monoalternate
+% xi monoalternate number_of_periods[3] = 20 => i = 3
 for j = 1:3
-    [xi, si] = signal_xi(signal_main(a0, a1, a2, t1), T(j), number_of_periods(3), period);
-    xi = mono(xi, si);
-    subplot(3, 1, j);
-    plot(si, xi);
-    x_label = 'x' + string(j) + '(t)';
-    title_ = 'Reprezentarea grafica ' + x_label + 'monoalternanta';
-    design_graph(x_label, 't', title_);
+    name = 'x';
+    signal = signal_main(a0, a1, a2, t1);
+    display_mono_signal(signal, T, j, 3, name, number_of_periods, period, @signal_xi, @mono);
 end
 
 input('next');
 
 % yi monoalternate
 for j = 1:3
-    [yi, si] = signal_yi(signal_main(a0, a1, a2, t1), T(j), number_of_periods(3), period);
-    yi = mono(yi, si);
-    subplot(3, 1, j);
-    plot(si, yi);
-    x_label = 'y' + string(j) + '(t)';
-    title_ = 'Reprezentarea grafica ' + x_label + 'monoalternanta';
-    design_graph(x_label, 't', title_);
+    name = 'y';
+    signal = signal_main(a0, a1, a2, t1);
+    display_mono_signal(signal, T, j, 3, name, number_of_periods, period, @signal_yi, @mono);
 end
 
 input('next');
 
 %zi monoalternate
 for j = 1:3
-    [zi, si] = signal_zi(signal_main(a0, a1, a2, t1), T(j), number_of_periods(3), period);
-    zi = mono(zi, si);
-    subplot(3, 1, j);
-    plot(si, zi);
-    x_label = 'z' + string(j) + '(t)';
-    title_ = 'Reprezentarea grafica ' + x_label + 'monoalternanta';
-    design_graph(x_label, 't', title_);
+    name = 'z';
+    signal = signal_main(a0, a1, a2, t1);
+    display_mono_signal(signal, T, j, 3, name, number_of_periods, period, @signal_zi, @mono);
 end
 
 input('next');
 
 %xi double alternate
 for j = 1:3
-    [xi, si] = signal_xi(signal_main(a0, a1, a2, t1), T(j), number_of_periods(3), period);
-    xi = double_(xi, si);
-    subplot(3, 1, j);
-    plot(si, xi);
-    x_label = 'x' + string(j) + '(t)';
-    title_ = 'Reprezentarea grafica ' + x_label + 'dubla alternanta';
-    design_graph(x_label, 't', title_);
+    name = 'x';
+    signal = signal_main(a0, a1, a2, t1);
+    display_double_signal(signal, T, j, 3, name, number_of_periods, period, @signal_xi, @double_);
 end
+
 input('next');
 
-% yi monoalternate
+% yi double alternate
 for j = 1:3
-    [yi, si] = signal_yi(signal_main(a0, a1, a2, t1), T(j), number_of_periods(3), period);
-    yi = double_(yi, si);
-    subplot(3, 1, j);
-    plot(si, yi);
-    x_label = 'y' + string(j) + '(t)';
-    title_ = 'Reprezentarea grafica ' + x_label + 'dubla alternanta';
-    design_graph(x_label, 't', title_);
+    name = 'y';
+    signal = signal_main(a0, a1, a2, t1);
+    display_double_signal(signal, T, j, 3, name, number_of_periods, period, @signal_yi, @double_);
 end
 
 input('next');
 
-%zi monoalternate
+%zi double alternate
 for j = 1:3
-    [zi, si] = signal_zi(signal_main(a0, a1, a2, t1), T(j), number_of_periods(3), period);
-    zi = double_(zi, si);
-    subplot(3, 1, j);
-    plot(si, zi);
-    x_label = 'z' + string(j) + '(t)';
-    title_ = 'Reprezentarea grafica ' + x_label + 'dubla alternanta';
-    design_graph(x_label, 't', title_);
+    name = 'z';
+    signal = signal_main(a0, a1, a2, t1);
+    display_double_signal(signal, T, j, 3, name, number_of_periods, period, @signal_zi, @double_);
 end
 
 input('next');
 
-% x par
-% plot(s, (signal_even(signal_main(a0, a1, a2, s), s)));
-% design_graph('t', 'x(t)', 'Reprezentarea grafica x(t)' + 'par');
-% 
-% input('next');
-% 
-% x impar
+% x par => a1 = 0
+subplot(2, 1, 1);
+plot(s, signal_second(a0, 0, a2, s));
+design_graph('t', 'x(t)', 'Reprezentarea grafica xpar(t)');
 
+% x impar => a2 = 0  a1 = -a1  a0 = 0
+subplot(2, 1, 2);
+plot(s, signal_second(0, -a1, 0, s));
+design_graph('t', 'x(t)', 'Reprezentarea grafica ximpar(t)');
 
+input('next');
+clf;
 
 % x(2t)
+subplot(3, 1, 1);
 plot(s, signal_second(a0, a1, a2, 2*s));
 design_graph('t', 'x(t)', 'Reprezentarea grafica x(2t)');
 
-input('next');
-
 % x(2t-1)
+subplot(3, 1, 2);
 plot(s, signal_second(a0, a1, a2, (2*s -1)));
 design_graph('t', 'x(t)', 'Reprezentarea grafica x(2t - 1)');
 
-input('next');
-
 % x(t/2)
+subplot(3, 1, 3);
 plot(s, signal_second(a0, a1, a2, s/2));
 design_graph('t', 'x(t)', 'Reprezentarea grafica x(t/2)');
 
 input('next');
+clf;
 
 % x^2(t)
-plot(s, signal_second(a0, a1, a2, s) ^ 2);
+subplot(3, 1, 1);
+plot(s, signal_second(a0, a1, a2, s) .^ 2);
 design_graph('t', 'x(t)', 'Reprezentarea grafica x^2(t)');
 
-input('next');
-
 % x^2(2t)
-plot(s, signal_second(a0, a1, a2, s) ^ 2);
+subplot(3, 1, 2);
+plot(s, signal_second(a0, a1, a2, 2 * s) .^ 2);
 design_graph('t', 'x(t)', 'Reprezentarea grafica x^2(2t)');
 
+% x(sqrt(abs(2t)))
+subplot(3, 1, 3);
+plot(s, sqrt(abs(signal_second(a0, a1, a2, s))));
+design_graph('t', 'x(t)', 'Reprezentarea grafica sqrt(x(t))');
+
 input('next');
+clf;
+
+% xi - CC
+for i = 4:5
+    for j = 1:3
+        name = 'x';
+        signal = signal_main(a0, a1, a2, t1);
+        display_signal_nocc(signal, T, j, i, name, number_of_periods, period, @signal_xi, CC);
+    end
+    input('next');
+end
+
+% cc: precision = 10^5
+for i = 1:3
+    disp(cc(signal_main(a0, a1, a2, precision_t), precision, T(i)));
+end
+
+input('next');
+
+% pt: precision = 10^4
+for i = 1:3
+    disp(calculate_power(signal_main(a0, a1, a2, pprecision_t), pprecision, T(i)));
+end
+
+input('next');
+
+% w1(t)
+syms t;
+tw1 = [n-4, n+12];
+w1 = @(t) n*heaviside(t-n) - (n-17)*heaviside(t-n-4) + (2*n+15)*heaviside(t-n-7) - (30+2*n)*heaviside(t-n-9) - 2*heaviside(t-n-10);
+fplot(@(t) w1(t), tw1);
+y_label = 'w1(t)';
+title_ = 'Reprezentarea grafica ' + y_label + ' intre ';
+design_graph('t', y_label, title_);
+
+input('next');
+
+% w2(t)
+syms t;
+tw1 = [-2, 11];
+w2 = @(t) t*heaviside(t) + (n&t-20)*heaviside(t-2) - (n-10)*heaviside(t-5) - (n*t-10)*heaviside(t-7);
+fplot(@(t) ww(t), tw1);
+y_label = 'w2(t)';
+title_ = 'Reprezentarea grafica ' + y_label + ' intre ';
+design_graph('t', y_label, title_);
+
+% w3(t)
+syms t;
+tw1 = [n-4, n+12];
+w1 = @(t) n*heaviside(t-n) - (n-17)*heaviside(t-n-4) + (2*n+15)*heaviside(t-n-7) - (30+2*n)*heaviside(t-n-9) - 2*heaviside(t-n-10);
+fplot(@(t) w1(t), tw1);
+y_label = 'w1(t)';
+title_ = 'Reprezentarea grafica ' + y_label + ' intre ';
+design_graph('t', y_label, title_);
